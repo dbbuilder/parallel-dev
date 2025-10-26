@@ -1,0 +1,133 @@
+{
+  "application": {
+    "name": "ParallelDev",
+    "version": "0.1.0",
+    "environment": "development"
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 5000,
+    "debug": true,
+    "threaded": true
+  },
+  "scanning": {
+    "scan_directory": "d:\\dev2",
+    "scan_interval_seconds": 300,
+    "file_watch_enabled": true,
+    "ignored_directories": [
+      "node_modules",
+      ".git",
+      "__pycache__",
+      "venv",
+      ".venv",
+      "dist",
+      "build",
+      ".next",
+      ".nuxt",
+      "target",
+      "bin",
+      "obj"
+    ],
+    "ignored_files": [
+      ".DS_Store",
+      "Thumbs.db",
+      "*.pyc",
+      "*.pyo",
+      "*.log"
+    ],
+    "project_indicators": [
+      "REQUIREMENTS.md",
+      "TODO.md",
+      "README.md"
+    ]
+  },
+  "database": {
+    "path": "./data/projects.db",
+    "backup_enabled": true,
+    "backup_interval_hours": 24,
+    "backup_retention_days": 30
+  },
+  "parsing": {
+    "task_status_markers": {
+      "not_started": "[ ]",
+      "completed": "[x]",
+      "in_progress": "[~]"
+    },
+    "priority_keywords": {
+      "high": ["high", "urgent", "critical", "must"],
+      "medium": ["medium", "should", "normal"],
+      "low": ["low", "nice to have", "could", "optional"]
+    },
+    "requirement_priorities": {
+      "must": ["MUST", "must have", "required", "critical"],
+      "should": ["SHOULD", "should have", "important"],
+      "could": ["COULD", "could have", "nice to have"],
+      "wont": ["WON'T", "won't have", "will not have"]
+    }
+  },
+  "metrics": {
+    "history_retention_days": 90,
+    "calculation_interval_seconds": 60,
+    "velocity_window_days": 14
+  },
+  "ai_providers": {
+    "enabled": false,
+    "claude": {
+      "api_key_env": "CLAUDE_API_KEY",
+      "model": "claude-sonnet-4-5-20250929",
+      "max_tokens": 4000,
+      "temperature": 0.7,
+      "timeout_seconds": 30
+    },
+    "openai": {
+      "api_key_env": "OPENAI_API_KEY",
+      "model": "gpt-4-turbo",
+      "max_tokens": 4000,
+      "temperature": 0.7,
+      "timeout_seconds": 30
+    },
+    "openrouter": {
+      "api_key_env": "OPENROUTER_API_KEY",
+      "base_url": "https://openrouter.ai/api/v1",
+      "model": "anthropic/claude-3.5-sonnet",
+      "max_tokens": 4000,
+      "temperature": 0.7,
+      "timeout_seconds": 30
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "./logs/paralleldev.log",
+    "max_bytes": 10485760,
+    "backup_count": 5,
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "console_enabled": true,
+    "file_enabled": true
+  },
+  "api": {
+    "cors_origins": [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:3000"
+    ],
+    "rate_limit_enabled": false,
+    "rate_limit_per_minute": 100,
+    "max_page_size": 100,
+    "default_page_size": 20
+  },
+  "ui": {
+    "default_theme": "light",
+    "refresh_interval_seconds": 30,
+    "max_tree_depth": 5,
+    "chart_animation_duration_ms": 750
+  },
+  "features": {
+    "file_watching": true,
+    "periodic_scanning": true,
+    "metrics_history": true,
+    "ai_integration": false,
+    "write_operations": false,
+    "multi_user": false
+  }
+}
