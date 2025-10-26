@@ -125,7 +125,28 @@ d:\dev2\parallel-dev\
 └── FUTURE.md                # Future enhancements and roadmap
 ```
 
-## Installation and Setup
+## Quick Start
+
+**Want to get started fast?** See [QUICKSTART.md](QUICKSTART.md) for a 3-step guide!
+
+### Quick Launch (Recommended)
+
+```bash
+# 1. Setup
+python -m venv venv && source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cd frontend && npm install && cd ..
+
+# 2. Launch
+./start-all.sh          # Linux/Mac
+# OR run start-backend.bat and start-frontend.bat in separate windows (Windows)
+
+# 3. Access
+# Frontend: http://localhost:8001
+# Backend:  http://localhost:8000
+```
+
+## Detailed Installation and Setup
 
 ### Prerequisites
 - Python 3.9 or higher
@@ -169,9 +190,11 @@ python backend/database/db_manager.py --init
 
 6. **Run backend server**:
 ```bash
-python backend/main.py
+./start-backend.sh       # Linux/Mac
+start-backend.bat        # Windows
+# OR directly: python src/api/app.py
 ```
-Backend will be available at http://localhost:5000
+Backend will be available at http://localhost:8000
 
 ### Frontend Setup
 
@@ -185,14 +208,15 @@ cd frontend
 npm install
 ```
 
-3. **Configure API endpoint** (if needed):
-Edit `frontend/src/services/api.js` to set backend URL (default: http://localhost:5000)
-
-4. **Run development server**:
+3. **Run development server**:
 ```bash
-npm run dev
+../start-frontend.sh     # Linux/Mac (from frontend dir)
+..\start-frontend.bat    # Windows (from frontend dir)
+# OR directly: npm run dev
 ```
-Frontend will be available at http://localhost:5173
+Frontend will be available at http://localhost:8001
+
+**Note**: The frontend automatically proxies API requests from `http://localhost:8001/api` to `http://localhost:8000/api`
 
 5. **Build for production**:
 ```bash
