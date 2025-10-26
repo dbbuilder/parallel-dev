@@ -4,13 +4,21 @@ REM Start ParallelDev Backend API on port 8000
 echo Starting ParallelDev Backend API on port 8000...
 echo.
 
+REM Set Python path (adjust if your Python is in a different location)
+set PYTHON_PATH=c:\python312\python.exe
+if not exist "%PYTHON_PATH%" (
+    echo Python not found at %PYTHON_PATH%
+    echo Trying default python command...
+    set PYTHON_PATH=python
+)
+
 REM Check for virtual environment
 if not exist venv (
     echo Virtual environment not found. Creating it now...
-    python -m venv venv
+    "%PYTHON_PATH%" -m venv venv
     if errorlevel 1 (
         echo Error: Failed to create virtual environment.
-        echo Make sure Python 3.9+ is installed and in your PATH.
+        echo Make sure Python 3.9+ is installed.
         pause
         exit /b 1
     )
@@ -25,7 +33,7 @@ if exist venv\Scripts\activate.bat (
     echo Error: Virtual environment activation script not found.
     echo Trying to recreate virtual environment...
     rmdir /s /q venv
-    python -m venv venv
+    "%PYTHON_PATH%" -m venv venv
     call venv\Scripts\activate.bat
 )
 
