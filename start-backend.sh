@@ -31,6 +31,7 @@ fi
 
 # Set port and start backend
 export PORT=8000
+export PYTHONPATH="$(pwd)"
 echo "Backend API will be available at http://localhost:8000"
 echo "Press Ctrl+C to stop the server"
 echo ""

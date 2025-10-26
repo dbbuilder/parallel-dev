@@ -61,6 +61,7 @@ if not exist data\projects.db (
 
 REM Set port and start backend
 set PORT=8000
+set PYTHONPATH=%CD%
 echo Backend API will be available at http://localhost:8000
 echo Press Ctrl+C to stop the server
 echo.
