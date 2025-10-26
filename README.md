@@ -228,10 +228,49 @@ npm run build
 ### Basic Workflow
 
 1. **Start the backend server** to begin scanning and monitoring projects
-2. **Open the dashboard** in your web browser at http://localhost:5173
-3. **Navigate the project tree** to view project details
-4. **Click on any project** to see detailed metrics, requirements, and tasks
-5. **Monitor progress** through charts and visualization panels
+2. **Open the dashboard** in your web browser at http://localhost:8001
+3. **Scan your development directory** to discover projects
+4. **Navigate the project tree** to view project details
+5. **Click on any project** to see detailed metrics, requirements, and tasks
+6. **Monitor progress** through charts and visualization panels
+
+### Scanning Your Projects
+
+ParallelDev needs to scan your development directories to discover projects. Use the provided scripts to scan your local directories:
+
+**Windows (PowerShell):**
+```powershell
+.\scan-local.ps1
+```
+
+**Linux/Mac:**
+```bash
+./scan-local.sh
+```
+
+These scripts scan `d:\dev` by default. To scan a different directory, use curl directly:
+
+```bash
+# Windows (PowerShell)
+Invoke-RestMethod -Uri "http://localhost:8000/api/scan" -Method Post -Body '{"directory":"C:\\Projects"}' -ContentType "application/json"
+
+# Linux/Mac
+curl -X POST http://localhost:8000/api/scan \
+  -H "Content-Type: application/json" \
+  -d '{"directory":"/home/user/projects"}'
+```
+
+**What gets scanned:**
+- Projects with REQUIREMENTS.md files (requirements tracking)
+- Projects with TODO.md files (task tracking)
+- Projects with README.md files (documentation)
+
+The scanner automatically:
+- Recursively searches directories
+- Parses markdown files for tasks and requirements
+- Calculates completion metrics
+- Stores project data in the database
+- Ignores common directories (node_modules, .git, venv, etc.)
 
 ### Dashboard Components
 
