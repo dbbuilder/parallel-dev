@@ -15,6 +15,7 @@ from src.services.project_detector import ProjectDetector
 from src.services.metrics_calculator import MetricsCalculator
 from src.parsers.todo_parser import TodoParser
 from src.parsers.requirements_parser import RequirementsParser
+from src.api.query_parser import QueryParser, QueryParseError
 
 
 def create_app(testing: bool = False, db_manager: Optional[DatabaseManager] = None) -> Flask:
@@ -65,14 +66,49 @@ def create_app(testing: bool = False, db_manager: Optional[DatabaseManager] = No
 
     @app.route('/api/projects', methods=['GET'])
     def get_all_projects():
-        """Get all projects."""
+        """Get all projects with optional filtering, sorting, and pagination."""
         try:
+            # Parse query parameters
+            filters = QueryParser.parse_filters('projects')
+            sorting = QueryParser.parse_sorting('projects')
+            pagination = QueryParser.parse_pagination()
+
+            # Get projects from database
             projects = app.db.list_projects()
 
-            return jsonify({
+            # Apply filters
+            projects = QueryParser.apply_filters(projects, filters)
+
+            # Apply sorting
+            projects = QueryParser.apply_sorting(
+                projects,
+                sorting['sort'],
+                sorting['order']
+            )
+
+            # Apply pagination
+            projects, page_meta = QueryParser.apply_pagination(
+                projects,
+                pagination['page'],
+                pagination['per_page']
+            )
+
+            response = {
                 'status': 'success',
                 'data': projects
-            })
+            }
+
+            # Add pagination metadata if applicable
+            if page_meta:
+                response['pagination'] = page_meta
+
+            return jsonify(response)
+
+        except QueryParseError as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 400
         except Exception as e:
             return jsonify({
                 'status': 'error',
@@ -159,6 +195,196 @@ def create_app(testing: bool = False, db_manager: Optional[DatabaseManager] = No
                     'metrics': metrics.to_dict()
                 }
             })
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 500
+
+    @app.route('/api/projects/<int:project_id>/tasks', methods=['GET'])
+    def get_project_tasks(project_id: int):
+        """Get tasks for a specific project with filtering, sorting, and pagination."""
+        try:
+            # Verify project exists
+            project_dict = app.db.get_project(project_id)
+            if not project_dict:
+                return jsonify({
+                    'status': 'error',
+                    'message': f'Project {project_id} not found'
+                }), 404
+
+            # Parse query parameters
+            filters = QueryParser.parse_filters('tasks')
+            sorting = QueryParser.parse_sorting('tasks')
+            pagination = QueryParser.parse_pagination()
+
+            # Get tasks from database
+            tasks = app.db.list_tasks(project_id=project_id)
+
+            # Apply filters
+            tasks = QueryParser.apply_filters(tasks, filters)
+
+            # Apply sorting
+            tasks = QueryParser.apply_sorting(
+                tasks,
+                sorting['sort'],
+                sorting['order']
+            )
+
+            # Apply pagination
+            tasks, page_meta = QueryParser.apply_pagination(
+                tasks,
+                pagination['page'],
+                pagination['per_page']
+            )
+
+            response = {
+                'status': 'success',
+                'data': tasks
+            }
+
+            # Add pagination metadata if applicable
+            if page_meta:
+                response['pagination'] = page_meta
+
+            return jsonify(response)
+
+        except QueryParseError as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 400
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 500
+
+    @app.route('/api/projects/<int:project_id>/requirements', methods=['GET'])
+    def get_project_requirements(project_id: int):
+        """Get requirements for a specific project with filtering, sorting, and pagination."""
+        try:
+            # Verify project exists
+            project_dict = app.db.get_project(project_id)
+            if not project_dict:
+                return jsonify({
+                    'status': 'error',
+                    'message': f'Project {project_id} not found'
+                }), 404
+
+            # Parse query parameters
+            filters = QueryParser.parse_filters('requirements')
+            sorting = QueryParser.parse_sorting('requirements')
+            pagination = QueryParser.parse_pagination()
+
+            # Get requirements from database
+            requirements = app.db.list_requirements(project_id=project_id)
+
+            # Apply filters
+            requirements = QueryParser.apply_filters(requirements, filters)
+
+            # Apply sorting
+            requirements = QueryParser.apply_sorting(
+                requirements,
+                sorting['sort'],
+                sorting['order']
+            )
+
+            # Apply pagination
+            requirements, page_meta = QueryParser.apply_pagination(
+                requirements,
+                pagination['page'],
+                pagination['per_page']
+            )
+
+            response = {
+                'status': 'success',
+                'data': requirements
+            }
+
+            # Add pagination metadata if applicable
+            if page_meta:
+                response['pagination'] = page_meta
+
+            return jsonify(response)
+
+        except QueryParseError as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 400
+        except Exception as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 500
+
+    @app.route('/api/search', methods=['GET'])
+    def search():
+        """Search across projects, tasks, and requirements."""
+        try:
+            # Parse search parameters
+            search_params = QueryParser.parse_search()
+            query = search_params['query'].lower()
+            search_type = search_params['type']
+
+            results = {}
+
+            # Search projects
+            if search_type in ['all', 'projects']:
+                projects = app.db.list_projects()
+                matching_projects = [
+                    p for p in projects
+                    if query in p.get('name', '').lower()
+                    or query in p.get('description', '').lower()
+                    or query in p.get('path', '').lower()
+                ]
+                results['projects'] = matching_projects if search_type == 'all' else results
+
+            # Search tasks
+            if search_type in ['all', 'tasks']:
+                tasks = app.db.list_tasks()
+                matching_tasks = [
+                    t for t in tasks
+                    if query in t.get('description', '').lower()
+                    or query in t.get('category', '').lower()
+                    or query in t.get('stage', '').lower()
+                ]
+                if search_type == 'all':
+                    results['tasks'] = matching_tasks
+                else:
+                    results = matching_tasks
+
+            # Search requirements
+            if search_type in ['all', 'requirements']:
+                requirements = app.db.list_requirements()
+                matching_requirements = [
+                    r for r in requirements
+                    if query in r.get('description', '').lower()
+                ]
+                if search_type == 'all':
+                    results['requirements'] = matching_requirements
+                else:
+                    results = matching_requirements
+
+            # For specific type searches, return the list directly
+            if search_type != 'all':
+                return jsonify({
+                    'status': 'success',
+                    'data': results
+                })
+
+            # For 'all' type searches, return categorized results
+            return jsonify({
+                'status': 'success',
+                'data': results
+            })
+
+        except QueryParseError as e:
+            return jsonify({
+                'status': 'error',
+                'message': str(e)
+            }), 400
         except Exception as e:
             return jsonify({
                 'status': 'error',
