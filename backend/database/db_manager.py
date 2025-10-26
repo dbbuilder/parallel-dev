@@ -68,7 +68,8 @@ class DatabaseManager:
             db_path: Path to SQLite database file
         """
         self.db_path = Path(db_path)
-        self.conn = sqlite3.connect(self.db_path)
+        # Use check_same_thread=False for Flask's multi-threaded environment
+        self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row  # Return rows as dictionaries
         self.conn.execute("PRAGMA foreign_keys = ON")
         self.cursor = self.conn.cursor()
