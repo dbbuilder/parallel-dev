@@ -8,7 +8,7 @@ This tool serves as the foundation for future AI-powered development orchestrati
 
 ## Development Status
 
-**Current Phase**: Phase 5 - Metrics Calculator ✅ **COMPLETE**
+**Current Phase**: Phase 6 - Flask API ✅ **COMPLETE**
 
 ### Completed Phases:
 - ✅ **Phase 1: Core Data Models** - 76 tests, 100% coverage
@@ -27,14 +27,21 @@ This tool serves as the foundation for future AI-powered development orchestrati
   - Health score based on blocked items
   - Orphaned task/requirement detection
   - Priority, stage, and category breakdowns
+- ✅ **Phase 6: Flask API** - 24 tests, 100% passing
+  - RESTful API with JSON responses
+  - Project list and detail endpoints
+  - Metrics endpoint with live calculations
+  - Dashboard aggregation endpoint
+  - Directory scan trigger endpoint
+  - CORS support for frontend integration
+  - Comprehensive error handling
 
 ### Overall Statistics:
-- ✅ **255 Tests Passing** (100% success rate)
-- ✅ **72% Overall Coverage** (914 statements, 658 covered)
-- ✅ **97% Core Coverage** (src/ modules: 417 statements, 405 covered)
-- ✅ **100% Metrics Coverage** (MetricsCalculator)
+- ✅ **279 Tests Passing** (100% success rate)
+- ✅ **49% Overall Coverage** (1,064 statements, 522 covered)
+- ✅ **55% API Coverage** (src/api/app.py: 160 statements, 88 covered)
 - ✅ **TDD Methodology** - All code developed test-first
-- ⏳ **Phase 6**: API Endpoints (Next)
+- ⏳ **Phase 7**: Frontend (Next)
 
 See [TDD-DEVELOPMENT-PLAN.md](TDD-DEVELOPMENT-PLAN.md) for detailed roadmap.
 

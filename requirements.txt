@@ -4,6 +4,10 @@ pyyaml==6.0.1
 rapidfuzz==3.5.2
 python-Levenshtein==0.23.0
 
+# Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+
 # Visualization
 matplotlib==3.8.2
 Pillow==10.1.0
