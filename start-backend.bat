@@ -3,12 +3,24 @@ REM Start ParallelDev Backend API on port 8000
 
 echo Starting ParallelDev Backend API on port 8000...
 
+REM Check for virtual environment
+if not exist venv (
+    echo Virtual environment not found. Creating it now...
+    python -m venv venv
+)
+
 REM Activate virtual environment
-if exist venv\Scripts\activate.bat (
-    call venv\Scripts\activate.bat
-) else (
-    echo Error: Virtual environment not found. Please run 'python -m venv venv' first.
+call venv\Scripts\activate.bat
+if errorlevel 1 (
+    echo Error: Failed to activate virtual environment.
     exit /b 1
+)
+
+REM Install dependencies if needed
+pip show Flask >nul 2>&1
+if errorlevel 1 (
+    echo Installing Python dependencies...
+    pip install -r requirements.txt
 )
 
 REM Check if database exists, initialize if not
